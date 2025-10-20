@@ -1,0 +1,21 @@
+[project]
+name = "context_aware_workflows"
+version = "1.0.0"
+description = "A project using agno, anthropic, openai, gemini, fastapi"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "agno>=2.1.8",
+    "anthropic>=0.71.0",
+    "openai>=2.5.0",
+    "google-genai>=1.45.0",
+    "fastapi[standard]>=0.119.1",
+    "ddgs>=9.6.1",
+    "sqlalchemy>=2.0.44",
+    "psycopg>=3.2.11",
+    "psycopg-binary>=3.2.11"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
