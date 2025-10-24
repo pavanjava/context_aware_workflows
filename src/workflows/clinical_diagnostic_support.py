@@ -1,3 +1,7 @@
+"""
+use case of sequential execution of workflow
+"""
+
 import asyncio
 import os
 from textwrap import dedent
@@ -16,7 +20,7 @@ from src.semantic_memory.memory_util import ShortTermMemory, LongTermMemory
 load_dotenv(find_dotenv())
 db = PostgresDb(db_url=os.environ.get("DATABASE_URL"))
 
-short_term_memory = ShortTermMemory()
+short_term_memory = ShortTermMemory(time_to_live=120)
 long_term_memory = LongTermMemory()
 user_id = '7f3a9c2e8b1d4f6a'
 

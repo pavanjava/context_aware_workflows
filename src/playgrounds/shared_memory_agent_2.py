@@ -22,7 +22,7 @@ agent = Agent(
     user_id=user_id
 )
 
-user_query = 'symptoms What are the  patient?'
+user_query = 'Which stock fundamental analysis do i need ?'
 context_response = long_term_memory.memory().retrieve(query=user_query)
 
 # check for the relevance score before ingesting the docs
@@ -33,8 +33,8 @@ context_response = long_term_memory.memory().retrieve(query=user_query)
 #     print(f"Metadata: {result['metadata']}")
 #     print("-" * 50)
 
-for result in context_response:
-    user_query += f" Context: {result['text']}"
+# for result in context_response:
+#     user_query += f" Context: {result['text']}"
 
 # print(user_query)
 # print("="*50)

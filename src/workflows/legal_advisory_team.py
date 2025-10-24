@@ -1,3 +1,6 @@
+"""
+use case of parallel execution of workflow
+"""
 import asyncio
 import os
 
@@ -13,7 +16,7 @@ from src.semantic_memory.memory_util import ShortTermMemory, LongTermMemory
 load_dotenv(find_dotenv())
 db = PostgresDb(db_url=os.environ.get("DATABASE_URL"))
 
-short_term_memory = ShortTermMemory()
+short_term_memory = ShortTermMemory(time_to_live=120)
 long_term_memory = LongTermMemory()
 user_id = '7f3a9c2e8b1d4f6a'
 
@@ -22,26 +25,42 @@ case_researcher = Agent(
     name="Case Law Researcher",
     tools=[GoogleSearchTools()],
     description="Specialized in finding relevant case law and legal precedents",
-    instructions="Search for relevant case law, judicial opinions, and legal precedents"
+    instructions="Search for relevant case law, judicial opinions, and legal precedents",
+    db=short_term_memory.memory(),
+    enable_user_memories=True,
+    enable_agentic_memory=True,
+    user_id=user_id,
 )
 
 statute_researcher = Agent(
     name="Statutory Researcher",
     tools=[GoogleSearchTools()],
     description="Specialized in researching statutes, regulations, and legislative history",
-    instructions="Search for applicable statutes, regulations, and legislative materials"
+    instructions="Search for applicable statutes, regulations, and legislative materials",
+    db=short_term_memory.memory(),
+    enable_user_memories=True,
+    enable_agentic_memory=True,
+    user_id=user_id,
 )
 
 legal_analyst = Agent(
     name="Legal Analyst",
     description="Analyzes legal research and synthesizes findings into coherent legal arguments",
-    instructions="Synthesize research findings into a comprehensive legal memorandum with clear arguments and citations"
+    instructions="Synthesize research findings into a comprehensive legal memorandum with clear arguments and citations",
+    db=short_term_memory.memory(),
+    enable_user_memories=True,
+    enable_agentic_memory=True,
+    user_id=user_id,
 )
 
 compliance_reviewer = Agent(
     name="Compliance Reviewer",
     description="Reviews legal documents for accuracy, completeness, and ethical compliance",
-    instructions="Review the legal memorandum for accuracy, cite-checking, and compliance with professional standards"
+    instructions="Review the legal memorandum for accuracy, cite-checking, and compliance with professional standards",
+    db=short_term_memory.memory(),
+    enable_user_memories=True,
+    enable_agentic_memory=True,
+    user_id=user_id,
 )
 
 # Create individual steps
@@ -81,10 +100,12 @@ legal_workflow = Workflow(
 )
 
 if __name__ == "__main__":
-    asyncio.run(
-        legal_workflow.aprint_response(
-            "Analyze the legal implications of using AI-generated content "
+    response = asyncio.run(
+        legal_workflow.arun(input="My name is Advocate. Pavan Mantha, Analyze the legal implications of using AI-generated content "
             "in commercial products, focusing on copyright and liability issues. "
             "Focus exclusive in Indian copy right and content act also any other laws from India."
         )
     )
+
+    print(response.content)
+    long_term_memory.memory().insert(text=response.content, metadata={'user_id': user_id})
