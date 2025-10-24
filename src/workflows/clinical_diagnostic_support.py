@@ -26,9 +26,10 @@ medical_literature_agent = Agent(
     model=OpenAIChat(id="gpt-4o-mini"),
     tools=[DuckDuckGoTools()],
     role="Search for peer-reviewed medical research, clinical trials, and latest treatment protocols",
-    db=long_term_memory.memory(),
+    db=short_term_memory.memory(),
     enable_user_memories=True,
-    enable_agentic_memory=True
+    enable_agentic_memory=True,
+    user_id=user_id,
 )
 
 clinical_guidelines_agent = Agent(
@@ -36,18 +37,20 @@ clinical_guidelines_agent = Agent(
     model=OpenAIChat(id="gpt-4o-mini"),
     # tools=[DuckDuckGoTools()],  # Replace with medical database tools if available
     role="Extract evidence-based guidelines, dosage protocols, and contraindications from medical databases",
-    db=long_term_memory.memory(),
+    db=short_term_memory.memory(),
     enable_user_memories=True,
-    enable_agentic_memory=True
+    enable_agentic_memory=True,
+    user_id=user_id,
 )
 
 diagnostic_specialist_agent = Agent(
     name="Diagnostic Specialist Agent",
     model=OpenAIChat(id="gpt-4o-mini"),
     instructions="Analyze patient symptoms, lab results, and medical history to provide differential diagnosis recommendations",
-    db=long_term_memory.memory(),
+    db=short_term_memory.memory(),
     enable_user_memories=True,
-    enable_agentic_memory=True
+    enable_agentic_memory=True,
+    user_id=user_id,
 )
 
 
@@ -119,34 +122,13 @@ if __name__ == "__main__":
             prepare_diagnostic_report_input,
             diagnostic_specialist_agent,
         ],
-        db=long_term_memory.memory(),
+        db=short_term_memory.memory(),
     )
 
-    # response = clinical_diagnosis_workflow.run(
-    #     input="""
-    #         45-year-old male patient presenting with:
-    #         - Persistent fatigue for 3 months
-    #         - Unexplained weight loss (15 lbs)
-    #         - Intermittent fever (99-101°F)
-    #         - Night sweats
-    #         - Mild abdominal discomfort
-    #
-    #         Medical History: Type 2 Diabetes (controlled), Hypertension
-    #         Current Medications: Metformin 1000mg, Lisinopril 10mg
-    #         Recent Travel: None
-    #         Family History: Father had lymphoma at age 60
-    #     """,
-    #     user_id=user_id
-    # )
-    #
-    # print(response.content)
-
-    asyncio.run(
-        clinical_diagnosis_workflow.aprint_response(
+    response = asyncio.run(
+        clinical_diagnosis_workflow.arun(
             input="""
-            As a doctor i want you to analyse and give me the report 
-            Patient Details:
-            the Patient 45-year-old male presenting with:
+            I am Dr. Pavan Kumar and I have a patient 45-year-old male presenting with:
             - Persistent fatigue for 3 months
             - Unexplained weight loss (15 lbs)
             - Intermittent fever (99-101°F)
@@ -158,7 +140,9 @@ if __name__ == "__main__":
             Recent Travel: None
             Family History: Father had lymphoma at age 60
             """,
-            markdown=True,
             user_id=user_id,
         )
     )
+
+    print(response.content)
+    long_term_memory.memory().insert(text=response.content, metadata={'user_id': user_id})

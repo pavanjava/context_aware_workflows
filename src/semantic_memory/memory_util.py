@@ -1,5 +1,7 @@
 from agno.db.redis import RedisDb
-from src.semantic_memory.qdrant_db import QdrantDB
+from agno.knowledge import Knowledge
+
+from src.semantic_memory.qdrant_db import SemanticLongTermMemory
 
 
 class ShortTermMemory:
@@ -12,8 +14,9 @@ class ShortTermMemory:
         return self.stm_db
 
 class LongTermMemory:
-    def __init__(self, model_name: str= "BAAI/bge-small-en"):
-        self.ltm_db = QdrantDB(db_url="http://localhost:6333", api_key='th3s3cr3tk3y', model_name=model_name)
+    def __init__(self):
+        # model_name can be "snowflake/snowflake-arctic-embed-m"
+        self.ltm_db = SemanticLongTermMemory()
 
-    def memory(self) -> QdrantDB:
+    def memory(self) -> SemanticLongTermMemory:
         return self.ltm_db

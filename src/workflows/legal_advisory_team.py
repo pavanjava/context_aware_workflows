@@ -8,8 +8,14 @@ from agno.workflow import Step, Workflow
 from agno.workflow.parallel import Parallel
 from dotenv import load_dotenv, find_dotenv
 
+from src.semantic_memory.memory_util import ShortTermMemory, LongTermMemory
+
 load_dotenv(find_dotenv())
 db = PostgresDb(db_url=os.environ.get("DATABASE_URL"))
+
+short_term_memory = ShortTermMemory()
+long_term_memory = LongTermMemory()
+user_id = '7f3a9c2e8b1d4f6a'
 
 # Create specialized legal agents
 case_researcher = Agent(
