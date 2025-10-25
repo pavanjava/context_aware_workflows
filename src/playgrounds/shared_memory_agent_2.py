@@ -7,13 +7,15 @@ from dotenv import load_dotenv, find_dotenv
 from src.semantic_memory.memory_util import ShortTermMemory, LongTermMemory
 
 load_dotenv(find_dotenv())
-short_term_memory = ShortTermMemory()
+short_term_memory = ShortTermMemory(time_to_live=120)
 long_term_memory = LongTermMemory()
 user_id = '7f3a9c2e8b1d4f6a'
 
 # Create agent with Short Term Memory
 agent = Agent(
-    instructions="Always make your answer concise and focused to the user query.",
+    instructions=("Always make your answer concise and focused to the user query. "
+                 "Dont use your prior knowledge. Dont make your answer very generic."
+                 "If you dont know just say you 'I dont know'"),
     db=short_term_memory.memory(),
     tools=[DuckDuckGoTools(all=True)],
     enable_user_memories=True,
@@ -22,7 +24,7 @@ agent = Agent(
     user_id=user_id
 )
 
-user_query = 'Which stock fundamental analysis do i need ?'
+user_query = 'what is the patient health discussed?'
 context_response = long_term_memory.memory().retrieve(query=user_query)
 
 # check for the relevance score before ingesting the docs
