@@ -20,7 +20,7 @@ from src.semantic_memory.memory_util import ShortTermMemory, LongTermMemory
 load_dotenv(find_dotenv())
 db = PostgresDb(db_url=os.environ.get("DATABASE_URL"))
 
-short_term_memory = ShortTermMemory(time_to_live=120)
+short_term_memory = ShortTermMemory(time_to_live=300)
 long_term_memory = LongTermMemory()
 user_id = '7f3a9c2e8b1d4f6a'
 
@@ -34,6 +34,7 @@ medical_literature_agent = Agent(
     enable_user_memories=True,
     enable_agentic_memory=True,
     user_id=user_id,
+    debug_mode=True,
 )
 
 clinical_guidelines_agent = Agent(
@@ -45,6 +46,7 @@ clinical_guidelines_agent = Agent(
     enable_user_memories=True,
     enable_agentic_memory=True,
     user_id=user_id,
+    debug_mode=True,
 )
 
 diagnostic_specialist_agent = Agent(
@@ -55,6 +57,7 @@ diagnostic_specialist_agent = Agent(
     enable_user_memories=True,
     enable_agentic_memory=True,
     user_id=user_id,
+    debug_mode=True,
 )
 
 
@@ -111,6 +114,7 @@ medical_research_team = Team(
     name="Medical Research Team",
     members=[clinical_guidelines_agent, medical_literature_agent],
     instructions="Conduct comprehensive medical literature review and extract clinical guidelines for patient case analysis",
+    debug_mode=True,
 )
 
 
@@ -127,12 +131,13 @@ if __name__ == "__main__":
             diagnostic_specialist_agent,
         ],
         db=short_term_memory.memory(),
+        debug_mode=True,
     )
 
     response = asyncio.run(
         clinical_diagnosis_workflow.arun(
             input="""
-            I am Dr. Pavan Kumar and I have a patient 45-year-old male presenting with:
+            My name is Dr. Pavan Kumar and I have a patient 45-year-old male presenting with:
             - Persistent fatigue for 3 months
             - Unexplained weight loss (15 lbs)
             - Intermittent fever (99-101°F)
@@ -149,4 +154,4 @@ if __name__ == "__main__":
     )
 
     print(response.content)
-    long_term_memory.memory().insert(text=response.content, metadata={'user_id': user_id})
+    # long_term_memory.memory().insert(text=response.content, metadata={'user_id': user_id})

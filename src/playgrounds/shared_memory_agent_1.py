@@ -33,5 +33,6 @@ agent = Agent(
 response_1 = agent.run("My name is pavan and tomorrow i am speaking on 'context aware workflows' organised by Global AI Hyderabad. ", user_id=user_id)
 # response_1 = agent.run("What is my previous question and what is its answer?", user_id=user_id)
 # response_1 = agent.run("I am planning to stay back at Gachibowli after the talk so, can i get some good hotels (hotel name) to stay along with address and rating", user_id=user_id)
-long_term_memory.memory().insert(text=response_1.content, metadata={"user_id": user_id})
+
+# long_term_memory.memory().insert(text=response_1.content, metadata={"user_id": user_id})
 print(response_1.content)
