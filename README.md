@@ -213,4 +213,4 @@ Event: Global AI Hyderabad
 
 ---
 
-*This project demonstrates production-ready patterns for building context-aware AI systems with persistent memory and multi-agent orchestration.*
+*Note: This project demonstrates production-ready patterns for building context-aware AI systems with persistent memory and multi-agent orchestration.*
